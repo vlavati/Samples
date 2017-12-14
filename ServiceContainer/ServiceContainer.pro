@@ -11,4 +11,6 @@ SOURCES += main.cpp
 
 HEADERS += \
     model.h \
-    cservicecontainer.h
+    cservicecontainer.h \
+    internal.h \
+    cservicecreator.h

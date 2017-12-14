@@ -1,9 +1,9 @@
 #ifndef CSERVICECONTAINER_H
 #define CSERVICECONTAINER_H
 
-#include <unordered_map>
 #include <memory>
 #include <iostream>
+#include "internal.h"
 
 class CServiceContainer
 {
@@ -11,7 +11,7 @@ public:
     template <typename T>
     void set(const std::shared_ptr<T> &instance)
     {
-        auto key = typeId<T>();
+        auto key = Internal::typeId<T>();
         auto wrapper = std::make_shared<Container<T> >(instance);
 
         m_instances[key] = wrapper;
@@ -20,7 +20,7 @@ public:
     template <typename T>
     std::shared_ptr<T> get() const
     {
-        auto key = typeId<T>();
+        auto key = Internal::typeId<T>();
         auto it = m_instances.find(key);
 
         if (it == m_instances.end())
@@ -36,24 +36,14 @@ public:
     }
 
 private:
-    struct Delegate
-    {
-        virtual ~Delegate() {}
-    };
-
     template <typename T>
-    struct Container : Delegate
+    struct Container : Internal::Delegate
     {
-        const std::shared_ptr<T> &instance;
+        std::shared_ptr<T> instance;
         Container(const std::shared_ptr<T> &instance) : instance(instance) {}
     };
 
-    typedef std::string TypeId;
-
-    template<typename T>
-    static TypeId typeId() { return typeid(T).name(); }
-
-    std::unordered_map<TypeId, std::shared_ptr<Delegate> > m_instances;
+    Internal::TypeMap m_instances;
 };
 
 #endif // CSERVICECONTAINER_H
