@@ -24,14 +24,14 @@ public:
     }
 
     template <typename T>
-    std::shared_ptr<T> get(CServiceContainer &services) const
+    std::shared_ptr<T> make(CServiceContainer &services) const
     {
         auto key = Internal::typeId<T>();
         auto it = m_contstructors.find(key);
 
         if (it == m_contstructors.end())
         {
-            std::cerr << "Service not found: " << typeid(T).name();
+            std::cerr << "There is no constuctor for " << typeid(T).name();
             return std::shared_ptr<T>();
         }
 

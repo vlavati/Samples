@@ -13,4 +13,5 @@ HEADERS += \
     model.h \
     cservicecontainer.h \
     internal.h \
-    cservicecreator.h
+    cservicecreator.h \
+    di.h
