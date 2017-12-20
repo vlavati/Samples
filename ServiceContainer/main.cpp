@@ -6,10 +6,11 @@
 
 //TODO: support modules
 //TODO: support objects wiring - run static functions that make connections between objects
-//TODO: support late initialization - run initialization function after object was created
 
 void testContainerCreator()
 {
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+
     CServiceContainer services;
     services.set(std::make_shared<CService>());
 
@@ -22,10 +23,15 @@ void testContainerCreator()
 
 void testDI()
 {
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
+
     DI di;
+    di.addDependencies<CService>();
     di.addDependencies<CObject, CService>();
+    di.addMethod<CObject, CService>(&CObject::prepareIt);
 
     auto object = di.get<CObject>();
+
     object->process();
 }
 
