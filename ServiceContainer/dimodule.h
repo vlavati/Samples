@@ -17,7 +17,7 @@ public:
     template <typename T>
     struct InjectionMethodWrapper
     {
-        typedef std::function<void(DI&,T*)> type;
+        typedef std::function<void(DI&,T&)> type;
     };
 
     template <class T>
@@ -29,12 +29,6 @@ public:
         m_contstructors[key] = wrapper;
     }
 
-    template <typename T, typename... Dependencies>
-    struct InjectionMethod
-    {
-        typedef void (T::* type) (std::shared_ptr<Dependencies> ...);
-    };
-
     template <typename T>
     void addMethod(typename InjectionMethodWrapper<T>::type wrapperMethod)
     {
@@ -42,6 +36,15 @@ public:
         auto wrapper = std::make_shared<InjectionMethodContainer<T> >(wrapperMethod);
 
         m_methods[key] = wrapper;
+    }
+
+    void addModule(DIModule &subModule)
+    {
+        for (auto keyValue : subModule.m_methods)
+            m_methods[keyValue.first] = keyValue.second;
+
+        for (auto keyValue : subModule.m_contstructors)
+            m_contstructors[keyValue.first] = keyValue.second;
     }
 
 protected:

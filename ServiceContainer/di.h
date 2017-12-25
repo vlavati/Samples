@@ -17,9 +17,9 @@ public:
         }
 
         template <type Method>
-        static void method(DI &di, T *obj)
+        static void method(DI &di, T &obj)
         {
-            (obj->*Method)(di.get<Dependencies>() ...);
+            (obj.*Method)(di.get<Dependencies>() ...);
         }
     };
 
@@ -41,7 +41,7 @@ public:
         if (it == m_instances.end())
         {
             auto newInstance = make<T>();
-            runMethod(newInstance.get());
+            tryRunMethod(*newInstance.get());
             set<T>(newInstance);
             return newInstance;
         }
@@ -53,21 +53,28 @@ public:
     }
 
     template <typename T>
-    void runMethod(T *obj)
+    bool tryRunMethod(T &obj)
     {
         auto key = Internal::typeId<T>();
         auto it = m_methods.find(key);
 
         if (it == m_methods.end())
-        {
-            std::cerr << "There is no method for " << typeid(T).name() << std::endl;
-            return;
-        }
+            return false;
 
         auto wrapper = it->second.get();
         auto container = static_cast<InjectionMethodContainer<T>*>(wrapper);
 
         container->function(*this, obj);
+        return true;
+    }
+
+    template <typename T>
+    void runMethod(T &obj)
+    {
+        if (tryRunMethod(obj))
+            return;
+
+        std::cerr << "There is no method for " << typeid(T).name() << std::endl;
     }
 
 private:

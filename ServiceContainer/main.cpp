@@ -29,9 +29,7 @@ void testDI()
     module.addMethod<CObject>(DI::Inject<CObject, CService>::method<&CObject::prepareIt>);
 
     DI di;
-    di.addDependencies<CService>(DI::Inject<CService>::factory);
-    di.addDependencies<CObject>(DI::Inject<CObject, CService>::factory);
-    di.addMethod<CObject>(DI::Inject<CObject, CService>::method<&CObject::prepareIt>);
+    di.addModule(module);
 
     auto object = di.get<CObject>();
 
