@@ -2,35 +2,26 @@
 #define DI_H
 
 #include "internal.h"
+#include "dimodule.h"
 
-class DI
+class DI : public DIModule
 {
 public:
     template <typename T, typename... Dependencies>
-    void addDependencies()
-    {
-        auto key = Internal::typeId<T>();
-        auto wrapperCreator = [] (DI &di) { return std::make_shared<T>(di.get<Dependencies>() ...); };
-        auto wrapper = std::make_shared<FunctionContainer<T> >(wrapperCreator);
-
-        m_contstructors[key] = wrapper;
-    }
-
-    template <typename T, typename... Dependencies>
-    struct InjectionMethod
-    {
+    struct Inject {
         typedef void (T::* type) (std::shared_ptr<Dependencies> ...);
+
+        static std::shared_ptr<T> factory(DI &di)
+        {
+            return std::make_shared<T>(di.get<Dependencies>() ...);
+        }
+
+        template <type Method>
+        static void method(DI &di, T *obj)
+        {
+            (obj->*Method)(di.get<Dependencies>() ...);
+        }
     };
-
-    template <typename T, typename... Dependencies>
-    void addMethod(typename InjectionMethod<T, Dependencies ...>::type method)
-    {
-        auto key = Internal::typeId<T>();
-        auto wrapperMethod = [method] (DI &di, T* obj) { (obj->*method)(di.get<Dependencies>() ...); };
-        auto wrapper = std::make_shared<InjectionMethodContainer<T> >(wrapperMethod);
-
-        m_methods[key] = wrapper;
-    }
 
     template <typename T>
     void set(const std::shared_ptr<T> &instance)
@@ -105,35 +96,7 @@ private:
         Container(const std::shared_ptr<T> &instance) : instance(instance) {}
     };
 
-    template <typename T>
-    struct Function
-    {
-        typedef std::shared_ptr<T> (*type)(DI&);
-    };
-
-    template <typename T>
-    struct FunctionContainer : Internal::Delegate
-    {
-        typename Function<T>::type function;
-        FunctionContainer(typename Function<T>::type _function) : function(_function) {}
-    };
-
-    template <typename T, typename... Dependencies>
-    struct InjectionMethodWrapper
-    {
-        typedef std::function<void(DI&,T*)> type;
-    };
-
-    template <typename T>
-    struct InjectionMethodContainer : Internal::Delegate
-    {
-        typename InjectionMethodWrapper<T>::type function;
-        InjectionMethodContainer(typename InjectionMethodWrapper<T>::type _function) : function(_function) {}
-    };
-
     Internal::TypeMap m_instances;
-    Internal::TypeMap m_contstructors;
-    Internal::TypeMap m_methods;
 };
 
 #endif // DI_H

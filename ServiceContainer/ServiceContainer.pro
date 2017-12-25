@@ -14,4 +14,5 @@ HEADERS += \
     cservicecontainer.h \
     internal.h \
     cservicecreator.h \
-    di.h
+    di.h \
+    dimodule.h

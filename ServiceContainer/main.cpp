@@ -3,9 +3,7 @@
 #include "cservicecontainer.h"
 #include "cservicecreator.h"
 #include "di.h"
-
-//TODO: support modules
-//TODO: support objects wiring - run static functions that make connections between objects
+#include "dimodule.h"
 
 void testContainerCreator()
 {
@@ -25,10 +23,15 @@ void testDI()
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 
+    DIModule module;
+    module.addDependencies<CService>(DI::Inject<CService>::factory);
+    module.addDependencies<CObject>(DI::Inject<CObject, CService>::factory);
+    module.addMethod<CObject>(DI::Inject<CObject, CService>::method<&CObject::prepareIt>);
+
     DI di;
-    di.addDependencies<CService>();
-    di.addDependencies<CObject, CService>();
-    di.addMethod<CObject, CService>(&CObject::prepareIt);
+    di.addDependencies<CService>(DI::Inject<CService>::factory);
+    di.addDependencies<CObject>(DI::Inject<CObject, CService>::factory);
+    di.addMethod<CObject>(DI::Inject<CObject, CService>::method<&CObject::prepareIt>);
 
     auto object = di.get<CObject>();
 
