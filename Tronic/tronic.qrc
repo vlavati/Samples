@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/CueManager.qml</file>
+        <file>qml/CueView.qml</file>
+        <file>qml/DriveEditor.js</file>
+        <file>qml/DriveEditor.qml</file>
+        <file>qml/DriveListView.qml</file>
+        <file>qml/DrivesStaticModel.qml</file>
+        <file>qml/EditorsView.qml</file>
+        <file>qml/GroupEditor.js</file>
+        <file>qml/GroupEditor.qml</file>
+        <file>qml/GroupStaticModel.qml</file>
+        <file>qml/GroupView.js</file>
+        <file>qml/GroupView.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/ScenarioStaticModel.qml</file>
+        <file>qml/SingleCueView.qml</file>
+        <file>qml/SingleDriveView.qml</file>
+        <file>qml/SingleGroupView.qml</file>
+        <file>qml/Singleton.js</file>
+        <file>qml/StatusView.qml</file>
+    </qresource>
+</RCC>
