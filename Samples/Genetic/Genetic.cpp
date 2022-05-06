@@ -33,10 +33,10 @@ Thing summary(Store& store, Solution solution)
 }
 
 template <typename Solution, typename Store, typename Validation>
-Solution bestBrutforce(Store& store, Validation isValid)
+vector<Solution> bestBrutforce(Store& store, Validation isValid)
 {
 	int bestCalories = 0;
-	Solution best = 0;
+	vector<Solution> best;
 
 	// hardcoded 256 variants
 	// TODO use mutable generator to generate all cases of Solution
@@ -45,7 +45,6 @@ Solution bestBrutforce(Store& store, Validation isValid)
 	{
 		Thing sum = summary(store, i);
 
-
 		// It is possible to use functional concept
 		if (!isValid(sum))
 			continue;
@@ -53,7 +52,11 @@ Solution bestBrutforce(Store& store, Validation isValid)
 		if (sum.calories > bestCalories)
 		{
 			bestCalories = sum.calories;
-			best = i;
+			best = { i };
+		}
+		else if (sum.calories == bestCalories)
+		{
+			best.push_back(i);
 		}
 	}
 
@@ -164,20 +167,27 @@ int main()
 {
 	Knapsack knapsack{};
 
+	cout << "BRUTFORCE" << endl;
 	auto isValid = [&knapsack](auto sum) { return sum.weight <= knapsack.maxWeight;  };
-	int best = bestBrutforce<int>(knapsack.store, isValid);
+	auto best = bestBrutforce<int>(knapsack.store, isValid);
+	for (auto x : best)
+	{
+		auto sum = summary(knapsack.store, x);
+		cout << "Best:" << hex << x << " Bin: " << bitset<8>(x) << endl;
+		cout << "Calories:" << dec << sum.calories << endl;
+		cout << "Weight:" << sum.weight << endl;
+	}
 
-	cout << "Best:"  << hex << best << " Bin: " << bitset<8>(best) << endl;
-	auto sum = summary(knapsack.store, best);
-	cout << "Calories:" << dec <<  sum.calories << endl;
-	cout << "Weight:" << sum.weight << endl;
-
+	cout << "GENETIC" << endl;
 	knapsack.randoms = constantSeed(5);
 	auto bestG = bestGenetic(knapsack);
 	cout << "Genetic:" << hex << bestG << " Bin: " << bitset<8>(bestG) << endl;
 	auto sumG = summary(knapsack.store, bestG);
 	cout << "Calories:" << dec << sumG.calories << endl;
 	cout << "Weight:" << sumG.weight << endl;
+
+	cout << "RESULT" << endl;
+	cout << "Genetic is " << ((find(best.begin(), best.end(), bestG) == best.end()) ? "NOT" : "") << " ABLE to find solution" << endl;
 
 	return 0;
 }
