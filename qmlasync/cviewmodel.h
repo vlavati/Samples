@@ -8,8 +8,17 @@ class CViewModel : public QObject
     Q_OBJECT
 public:
     explicit CViewModel(QObject *parent = 0);
+    ~CViewModel();
+
+    Q_INVOKABLE void startAsync();
+
+private slots:
+    void onStartedHere();
+    void onStoppedHere();
 
 signals:
+    void started();
+    void stopped();
 
 public slots:
 };

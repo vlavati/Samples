@@ -2,16 +2,23 @@
 #define CVIEWMODELFACTORY_H
 
 #include <QObject>
+#include <QHash>
+#include <functional>
+
+using Creator =  std::function<QObject*()>;
 
 class CViewModelFactory : public QObject
 {
     Q_OBJECT
 public:
-    explicit CViewModelFactory(QObject *parent = 0);
+    CViewModelFactory();
 
-signals:
+    Q_INVOKABLE QObject *get(const QString &key, QObject *parent);
+    void add(const QString &key, Creator creator);
 
-public slots:
+private:
+    QHash<QString, Creator> m_creators;
+
 };
 
 #endif // CVIEWMODELFACTORY_H

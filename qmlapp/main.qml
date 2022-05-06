@@ -1,18 +1,24 @@
 import QtQuick 2.6
 import QtQuick.Window 2.2
+import QtQuick.Controls 1.4
+import com.mycompany.qmlapp 1.0
 
 Window {
     visible: true
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            Qt.quit();
+    Button {
+        anchors {
+            top: parent.top
+            right: parent.right
         }
+        text: qsTr("Quit")
+        onClicked: Qt.quit();
     }
 
-    Text {
-        text: qsTr("Hello World")
-        anchors.centerIn: parent
+
+    StackView {
+        id: stack
+        initialItem: Qt.resolvedUrl("Products.qml")
+        anchors.fill: parent
     }
 }

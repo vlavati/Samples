@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Products.qml</file>
+        <file>Edit.qml</file>
     </qresource>
 </RCC>

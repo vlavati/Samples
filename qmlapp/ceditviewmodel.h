@@ -6,12 +6,22 @@
 class CEditViewModel : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString str READ str WRITE setStr NOTIFY strChanged)
+
 public:
-    explicit CEditViewModel(QObject *parent = 0);
+    CEditViewModel();
+    ~CEditViewModel();
+    QString str() const;
 
 signals:
+    void strChanged(QString str);
 
 public slots:
+    void setStr(QString str);
+
+private:
+    QString m_str = "SomeString";
+
 };
 
 #endif // CEDITVIEWMODEL_H
