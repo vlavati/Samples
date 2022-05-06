@@ -2,3 +2,8 @@
 **/*.pro.user
 **/out/
 **/.vs/
+**/.ipynb_checkpoints
+**/CMakeLists.txt.user*
+**/bin
+**/obj
+*.bak
